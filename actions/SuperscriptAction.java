@@ -5,12 +5,8 @@ import java.awt.event.ActionEvent;
 
 public class SuperscriptAction extends StyledEditorKit.StyledTextAction {
 
-    /**
-     * Creates a new StyledTextAction from a string action name.
-     *
-     * @param nm the name of the action
-     */
-    public SuperscriptAction(String nm) {
+
+    public SuperscriptAction() {
         super("Надстрочный знак");
     }
 
