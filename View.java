@@ -43,25 +43,66 @@ public class View extends JFrame implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent actionEvent) {
+        String action = actionEvent.getActionCommand();
 
+        if (action.equals("Новый")) {
+            controller.createNewDocument();
+        } else if (action.equals("Открыть")) {
+            controller.openDocument();
+        } else if (action.equals("Сохранить")) {
+            controller.saveDocument();
+        } else if (action.equals("Сохранить как...")) {
+            controller.saveDocumentAs();
+        } else if (action.equals("Выход")) {
+            controller.exit();
+        } else if (action.equals("О программе")) {
+            this.showAbout();
+        }
+    }
+
+    public void selectHtmlTab() {
+        tabbedPane.setSelectedIndex(0);
+        resetUndo();
+    }
+
+    public boolean isHtmlTabSelected() {
+
+        return tabbedPane.getSelectedIndex() == 0;
+    }
+
+    public void update() {
+        htmlTextPane.setDocument(controller.getDocument());
     }
 
     public void undo() {
-       try { undoManager.undo();}
-       catch (CannotUndoException undoExeption){
-           ExceptionHandler.log(undoExeption);
-       }
+        try {
+            undoManager.undo();
+        } catch (CannotUndoException undoExeption) {
+            ExceptionHandler.log(undoExeption);
+        }
 
+    }
+
+    public void showAbout() {
+        JOptionPane.showMessageDialog(getContentPane()
+                , "Это HTML-редактор Лебедева А.В.. version: 1.0 "
+                , "Информация:"
+                , JOptionPane.INFORMATION_MESSAGE
+        );
     }
 
     public void redo() {
-        try { undoManager.redo();}
-        catch (CannotRedoException undoExeption){
+        try {
+            undoManager.redo();
+        } catch (CannotRedoException undoExeption) {
             ExceptionHandler.log(undoExeption);
         }
     }
-    public void resetUndo(){undoManager.discardAllEdits();}
+
+    public void resetUndo() {
+        undoManager.discardAllEdits();
+    }
 
     public Controller getController() {
         return controller;
@@ -122,7 +163,14 @@ public class View extends JFrame implements ActionListener {
     }
 
     public void selectedTabChanged() {
+        if (tabbedPane.getSelectedIndex() == 0) {
+            controller.setPlainText(plainTextPane.getText());
+        } else if (tabbedPane.getSelectedIndex() == 1) {
+            plainTextPane.setText(controller.getPlainText());
+        }
+        this.resetUndo();
     }
+
 
     public boolean canUndo() {
         return undoManager.canUndo();
